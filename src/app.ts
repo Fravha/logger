@@ -7,7 +7,7 @@ import { env } from "./config/env.js";
 import { prisma } from "./infrastructure/database/prisma-client.js";
 import { FirebaseTokenVerifier } from "./infrastructure/identity/firebase-token-verifier.js";
 import { HealthService } from "./modules/health/health.service.js";
-import { PrismaUserRepository } from "./modules/users/prisma-user.repository.js";
+import { PrismaUserRepository } from "./core/users/prisma-user.repository.js";
 import { createRoutes } from "./routes/index.js";
 import { errorHandler } from "./shared/http/error-handler.js";
 import { notFoundHandler } from "./shared/http/not-found-handler.js";

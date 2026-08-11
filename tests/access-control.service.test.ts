@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { AccessControlService } from "../src/modules/access-control/access-control.service.js";
-import type { AuthenticatedUser } from "../src/modules/users/user.types.js";
+import { AccessControlService } from "../src/core/access-control/access-control.service.js";
+import type { AuthenticatedUser } from "../src/core/users/user.types.js";
 
 const user: AuthenticatedUser = {
   id: "user-id",

@@ -2,10 +2,10 @@ import assert from "node:assert/strict";
 import type { AddressInfo } from "node:net";
 import { describe, it } from "node:test";
 import express from "express";
-import { createAuthRouter } from "../src/modules/auth/auth.routes.js";
-import type { TokenVerifier } from "../src/modules/auth/auth.types.js";
-import type { UserRepository } from "../src/modules/users/user.repository.js";
-import type { AuthenticatedUser } from "../src/modules/users/user.types.js";
+import { createAuthRouter } from "../src/core/auth/auth.routes.js";
+import type { TokenVerifier } from "../src/core/auth/auth.types.js";
+import type { UserRepository } from "../src/core/users/user.repository.js";
+import type { AuthenticatedUser } from "../src/core/users/user.types.js";
 import { AppError } from "../src/shared/errors/app-error.js";
 
 const activeUser: AuthenticatedUser = {

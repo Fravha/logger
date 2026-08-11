@@ -2,7 +2,7 @@ import { cert, getApps, initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
 import type { AppConfig } from "../../config/env.js";
 import { AppError } from "../../shared/errors/app-error.js";
-import type { AuthIdentity, TokenVerifier } from "../../modules/auth/auth.types.js";
+import type { AuthIdentity, TokenVerifier } from "../../core/auth/auth.types.js";
 
 export class FirebaseTokenVerifier implements TokenVerifier {
   private readonly auth;

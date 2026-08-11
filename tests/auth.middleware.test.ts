@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { extractBearerToken } from "../src/modules/auth/auth.middleware.js";
+import { extractBearerToken } from "../src/core/auth/auth.middleware.js";
 import { AppError } from "../src/shared/errors/app-error.js";
 
 describe("extractBearerToken", () => {

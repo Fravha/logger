@@ -1,10 +1,10 @@
 import { Router } from "express";
 import type { AppConfig } from "../config/env.js";
-import type { TokenVerifier } from "../modules/auth/auth.types.js";
-import { createAuthRouter } from "../modules/auth/auth.routes.js";
+import type { TokenVerifier } from "../core/auth/auth.types.js";
+import { createAuthRouter } from "../core/auth/auth.routes.js";
 import { createHealthRouter } from "../modules/health/health.routes.js";
 import type { HealthService } from "../modules/health/health.service.js";
-import type { UserRepository } from "../modules/users/user.repository.js";
+import type { UserRepository } from "../core/users/user.repository.js";
 
 interface RouteDependencies {
   config: AppConfig;
