@@ -1,24 +1,22 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client.js";
-import { businessDocTypes } from "../src/modules/doc-types/index.js";
 
 const connectionString = process.env.DATABASE_URL;
-if (!connectionString) throw new Error("DATABASE_URL is required to seed the database");
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString }) });
+if (!connectionString) {
+  throw new Error("DATABASE_URL is required to seed the database");
+}
 
-const corePermissions = [
-  { code: "users:read", name: "Read users" },
-  { code: "users:manage", name: "Manage users" },
-  { code: "rbac:read", name: "Read roles and permissions" },
-  { code: "rbac:manage", name: "Manage roles and permissions" },
-] as const;
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString }),
+});
 
 const permissions = [
-  ...corePermissions,
-  ...businessDocTypes.flatMap((docType) => docType.permissions),
-];
+  { code: "users:read", name: "Read users" },
+  { code: "users:manage", name: "Manage users" },
+  { code: "rbac:manage", name: "Manage roles and permissions" },
+] as const;
 
 async function main() {
   for (const permission of permissions) {
@@ -31,8 +29,12 @@ async function main() {
 
   const adminRole = await prisma.role.upsert({
     where: { code: "admin" },
-    update: { name: "Administrator", description: "Full access to Logger administration" },
-    create: { code: "admin", name: "Administrator", description: "Full access to Logger administration" },
+    update: { name: "Administrator" },
+    create: {
+      code: "admin",
+      name: "Administrator",
+      description: "Full access to starter-kit administration",
+    },
   });
 
   const storedPermissions = await prisma.permission.findMany({
@@ -42,7 +44,12 @@ async function main() {
 
   for (const permission of storedPermissions) {
     await prisma.rolePermission.upsert({
-      where: { roleId_permissionId: { roleId: adminRole.id, permissionId: permission.id } },
+      where: {
+        roleId_permissionId: {
+          roleId: adminRole.id,
+          permissionId: permission.id,
+        },
+      },
       update: {},
       create: { roleId: adminRole.id, permissionId: permission.id },
     });

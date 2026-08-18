@@ -34,12 +34,39 @@ export function resolveCurrentUser(userRepository: UserRepository): RequestHandl
         throw new AppError("AUTH_REQUIRED", "Authentication is required", 401);
       }
 
-      const user = await userRepository.findByFirebaseUid(req.authIdentity.uid);
+      const user = await userRepository.findByFirebaseUid(
+        req.authIdentity.uid
+      );
+
       if (!user) {
-        throw new AppError("AUTH_USER_NOT_REGISTERED", "User is not registered in Logger", 403);
+        throw new AppError(
+          "AUTH_USER_NOT_REGISTERED", 
+          "User is not registered in Logger", 
+          403
+        );
       }
+
       if (user.status !== "ACTIVE") {
-        throw new AppError("AUTH_USER_INACTIVE", "User is not active", 403);
+        throw new AppError(
+          "AUTH_USER_INACTIVE", 
+          "User is not active", 
+          403
+        );
+      }
+
+      const authTime = req.authIdentity.authTime;
+      if (authTime !== undefined) {
+        const loginAt = new Date(authTime * 1000);
+        if (
+          !user.lastLoginAt ||
+          loginAt > user.lastLoginAt
+        ) {
+          await userRepository.updateLastLoginAt(
+            user.id,
+            loginAt,
+          );
+          user.lastLoginAt = loginAt;
+        }
       }
 
       req.currentUser = user;

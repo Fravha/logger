@@ -5,9 +5,11 @@ import helmet from "helmet";
 import type { AppConfig } from "./config/env.js";
 import { env } from "./config/env.js";
 import { prisma } from "./infrastructure/database/prisma-client.js";
+import { FirebaseIdentityAdmin } from "./infrastructure/identity/firebase-identity-admin.js";
+import { FirebasePasswordResetSender } from "./infrastructure/identity/firebase-password-reset-sender.js";
 import { FirebaseTokenVerifier } from "./infrastructure/identity/firebase-token-verifier.js";
 import { HealthService } from "./modules/health/health.service.js";
-import { PrismaUserRepository } from "./modules/users/prisma-user.repository.js";
+import { PrismaUserRepository } from "./core/users/prisma-user.repository.js";
 import { createRoutes } from "./routes/index.js";
 import { errorHandler } from "./shared/http/error-handler.js";
 import { notFoundHandler } from "./shared/http/not-found-handler.js";
@@ -17,6 +19,8 @@ export function createApp(config: AppConfig = env) {
   const app = express();
   const userRepository = new PrismaUserRepository(prisma);
   const tokenVerifier = new FirebaseTokenVerifier(config);
+  const identityAdmin = new FirebaseIdentityAdmin(config);
+  const passwordResetSender = new FirebasePasswordResetSender(config);
   const healthService = new HealthService(prisma);
 
   app.disable("x-powered-by");
@@ -37,7 +41,7 @@ export function createApp(config: AppConfig = env) {
     legacyHeaders: false,
   }));
   app.use(express.json({ limit: "100kb" }));
-  app.use(createRoutes({ config, tokenVerifier, userRepository, healthService }));
+  app.use(createRoutes({ config, prisma, tokenVerifier, userRepository, identityAdmin, passwordResetSender, healthService }));
   app.use(notFoundHandler);
   app.use(errorHandler);
 

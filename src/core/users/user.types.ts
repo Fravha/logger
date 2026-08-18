@@ -6,6 +6,7 @@ export interface AuthenticatedUser {
   email: string;
   displayName: string | null;
   status: UserStatus;
+  lastLoginAt: Date | null;
   roles: string[];
   permissions: string[];
 }
