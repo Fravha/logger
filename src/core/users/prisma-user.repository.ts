@@ -14,6 +14,7 @@ export class PrismaUserRepository implements UserRepository {
         email: true,
         displayName: true,
         status: true,
+        lastLoginAt: true,
         roles: {
           select: {
             role: {
@@ -37,14 +38,36 @@ export class PrismaUserRepository implements UserRepository {
       email: user.email,
       displayName: user.displayName,
       status: user.status,
-      roles: user.roles.map(({ role }) => role.code),
+      lastLoginAt: user.lastLoginAt,
+
+      roles: user.roles.map(
+        ({ role }) => role.code
+      ),
+
       permissions: [
         ...new Set(
           user.roles.flatMap(({ role }) =>
-            role.permissions.map(({ permission }) => permission.code),
+            role.permissions.map(
+              ({ permission }) => permission.code
+            ),
           ),
         ),
       ],
     };
   }
+
+  async updateLastLoginAt(
+    userId: string,
+    lastLoginAt: Date,
+  ): Promise<void> {
+    await this.client.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        lastLoginAt,
+      },
+    });
+  }
 }
+

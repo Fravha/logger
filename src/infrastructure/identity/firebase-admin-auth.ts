@@ -1,0 +1,17 @@
+import { cert, getApps, initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
+import type { AppConfig } from "../../config/env.js";
+
+export function getFirebaseAdminAuth(config: AppConfig) {
+  if (!getApps().length) {
+    initializeApp({
+      credential: cert({
+        projectId: config.FIREBASE_PROJECT_ID,
+        clientEmail: config.FIREBASE_CLIENT_EMAIL,
+        privateKey: config.FIREBASE_PRIVATE_KEY,
+      }),
+    });
+  }
+
+  return getAuth();
+}
