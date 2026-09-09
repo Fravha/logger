@@ -13,7 +13,7 @@ export interface UserAdmin {
   displayName: string | null;
   status: UserStatus;
   lastLoginAt: Date | null;
-  roles: UserAdminRole[];
+  role: UserAdminRole | null;
   createdAt: Date;
   updatedAt: Date;
 }

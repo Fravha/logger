@@ -36,4 +36,28 @@ export class RoleController {
       res.status(204).send();
     } catch (error) { next(error); }
   };
+
+  setPermissions = async (
+    req: Request<Params>,
+    res: Response,
+    next: NextFunction,
+  ) => {
+    try {
+      const context = buildAuthenticatedAuditContext(
+        req,
+        res,
+      );
+
+      await this.service.setPermissions(
+        req.params.id,
+        req.body.permissionIds,
+        context,
+      );
+
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }

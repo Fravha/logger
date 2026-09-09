@@ -14,7 +14,7 @@ export interface UserAdminRepository {
   update(id: string, data: UpdateUserAdminDto): Promise<UserAdmin>;
   setStatus(id: string, status: UserStatus): Promise<UserAdmin>;
   delete(id: string): Promise<void>;
-  countRoles(roleIds: string[]): Promise<number>;
+  roleExists(roleId: string): Promise<boolean>;
   userHasRole(userId: string, roleCode: string): Promise<boolean>;
   countActiveUsersWithRole(roleCode: string): Promise<number>;
 }

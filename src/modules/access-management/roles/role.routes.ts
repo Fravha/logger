@@ -8,8 +8,9 @@ import type { PrismaClient } from "../../../generated/prisma/client.js";
 import { validateRequest } from "../../../shared/http/validate-request.js";
 import { PrismaRoleRepository } from "./prisma-role.repository.js";
 import { RoleController } from "./role.controller.js";
-import { createRoleSchema, roleIdParamsSchema, updateRoleSchema } from "./role.schema.js";
+import { createRoleSchema, roleIdParamsSchema, updateRoleSchema, setRolePermissionsSchema, } from "./role.schema.js";
 import { RoleService } from "./role.service.js";
+import { PrismaPermissionRepository } from "../permissions/prisma-permission.repository.js";
 
 export function createRoleRouter(
   client: PrismaClient,
@@ -17,7 +18,20 @@ export function createRoleRouter(
   userRepository: UserRepository,
   auditService: AuditService,
 ) {
-  const controller = new RoleController(new RoleService(new PrismaRoleRepository(client), auditService));
+
+  const roleRepository = new PrismaRoleRepository(client);
+  
+  const permissionRepository =
+    new PrismaPermissionRepository(client);
+
+  const service = new RoleService(
+    roleRepository,
+    permissionRepository,
+    auditService,
+  );
+
+  const controller = new RoleController(service);
+
   const router = Router();
   const auth = [authenticate(tokenVerifier), resolveCurrentUser(userRepository)] as const;
 
@@ -26,6 +40,17 @@ export function createRoleRouter(
   router.post("/", ...auth, requirePermission("rbac:manage"), validateRequest({ body: createRoleSchema }), controller.create);
   router.patch("/:id", ...auth, requirePermission("rbac:manage"), validateRequest({ params: roleIdParamsSchema, body: updateRoleSchema }), controller.update);
   router.delete("/:id", ...auth, requirePermission("rbac:manage"), validateRequest({ params: roleIdParamsSchema }), controller.delete);
+
+  router.put(
+    "/:id/permissions",
+    ...auth,
+    requirePermission("rbac:manage"),
+    validateRequest({
+      params: roleIdParamsSchema,
+      body: setRolePermissionsSchema,
+    }),
+    controller.setPermissions,
+  );
 
   return router;
 }

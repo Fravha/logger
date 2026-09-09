@@ -7,7 +7,7 @@ export const userAdminIdParamsSchema = z.object({
 export const createUserAdminSchema = z.object({
   email: z.string().trim().email().max(320),
   displayName: z.string().trim().min(1).max(150).optional(),
-  roleIds: z.array(z.string().uuid()).max(50).optional(),
+  roleId: z.string().uuid(),
 });
 
 export const updateUserAdminSchema = z.object({

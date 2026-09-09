@@ -7,30 +7,14 @@ type Params = { id: string };
 export class AssignmentController {
   constructor(private readonly service: AssignmentService) {}
 
-  replaceUserRoles = async (
+  replaceUserRole = async (
     req: Request<Params>,
     res: Response,
     next: NextFunction,
   ) => {
     try {
       const context = buildAuthenticatedAuditContext(req, res);
-      await this.service.replaceUserRoles(req.params.id, req.body.roleIds, context);
-      res.status(204).send();
-    } catch (error) { next(error); }
-  };
-
-  replaceRolePermissions = async (
-    req: Request<Params>,
-    res: Response,
-    next: NextFunction,
-  ) => {
-    try {
-      const context = buildAuthenticatedAuditContext(req, res);
-      await this.service.replaceRolePermissions(
-        req.params.id,
-        req.body.permissionIds,
-        context,
-      );
+      await this.service.replaceUserRole(req.params.id, req.body.roleId, context);
       res.status(204).send();
     } catch (error) { next(error); }
   };

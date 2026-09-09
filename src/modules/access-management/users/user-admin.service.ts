@@ -30,9 +30,8 @@ export class UserAdminService {
       throw new AppError("USER_EMAIL_ALREADY_EXISTS", "A user with this email already exists", 409);
     }
 
-    const roleIds = [...new Set(data.roleIds ?? [])];
-    if (await this.repository.countRoles(roleIds) !== roleIds.length) {
-      throw new AppError("ROLE_NOT_FOUND", "One or more roles do not exist", 404);
+    if (!await this.repository.roleExists(data.roleId)) {
+      throw new AppError("ROLE_NOT_FOUND", "Role not found", 404);
     }
 
     const firebaseUid = randomUUID();
@@ -41,7 +40,7 @@ export class UserAdminService {
     let createdUser: Awaited<ReturnType<UserAdminRepository["create"]>> | undefined;
 
     try {
-      createdUser = await this.repository.create({ ...data, roleIds, firebaseUid });
+      createdUser = await this.repository.create({ ...data, firebaseUid });
       localUserId = createdUser.id;
 
       await this.identityAdmin.createUser({
@@ -72,7 +71,7 @@ export class UserAdminService {
       resourceId: createdUser.id,
       metadata: {
         initialStatus: createdUser.status,
-        roleCodes: createdUser.roles.map((role) => role.code).sort(),
+        roleCode: createdUser.role?.code ?? null,
         passwordSetupSent: true,
       },
     });

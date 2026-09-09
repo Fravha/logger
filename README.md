@@ -23,6 +23,7 @@ La v1 implementa una política segura de aprovisionamiento **invite-only**: tene
 - [Guía de implementación de un módulo CRUD en Logger](#guía-de-implementación-de-un-módulo-crud-en-logger)
 - [Guía para crear nuevos módulos con docTypes](./1_guia_new_modulo.md)
 - [Usar Logger como API externa](./2_xapi-logger.md)
+- [Guía oficial para frontend](./front_guia-logger.md)
 - [Troubleshooting](#troubleshooting)
 
 ## Características
@@ -347,7 +348,8 @@ Respuesta `200`:
 ```json
 {
   "status": "ok",
-  "database": "connected"
+  "database": "connected",
+  "message": "Hello World!"
 }
 ```
 

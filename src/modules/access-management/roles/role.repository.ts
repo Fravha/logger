@@ -9,4 +9,8 @@ export interface RoleRepository {
   update(id: string, data: UpdateRoleDto): Promise<RoleModel>;
   delete(id: string): Promise<void>;
   countUsers(id: string): Promise<number>;
+  setPermissions(
+    id: string,
+    permissionIds: string[],
+  ): Promise<void>;
 }

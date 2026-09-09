@@ -1,7 +1,7 @@
 export interface CreateUserAdminDto {
   email: string;
   displayName?: string;
-  roleIds?: string[];
+  roleId: string;
 }
 
 export interface UpdateUserAdminDto {

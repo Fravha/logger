@@ -12,3 +12,9 @@ export const updateRoleSchema = z.object({
   name: z.string().trim().min(1).max(150).optional(),
   description: z.string().trim().max(500).nullable().optional(),
 }).refine((data) => Object.keys(data).length > 0, { message: "At least one field must be provided" });
+
+export const setRolePermissionsSchema = z.object({
+  permissionIds: z
+    .array(z.string().uuid())
+    .max(500),
+});

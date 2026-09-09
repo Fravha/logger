@@ -8,11 +8,7 @@ import type { PrismaClient } from "../../../generated/prisma/client.js";
 import { validateRequest } from "../../../shared/http/validate-request.js";
 import { AssignmentController } from "./assignment.controller.js";
 import { PrismaAssignmentRepository } from "./prisma-assignment.repository.js";
-import {
-  assignmentIdParamsSchema,
-  replaceRolePermissionsSchema,
-  replaceUserRolesSchema,
-} from "./assignment.schema.js";
+import { assignmentIdParamsSchema, replaceUserRoleSchema } from "./assignment.schema.js";
 import { AssignmentService } from "./assignment.service.js";
 
 export function createAssignmentRouter(
@@ -28,19 +24,11 @@ export function createAssignmentRouter(
   const auth = [authenticate(tokenVerifier), resolveCurrentUser(userRepository)] as const;
 
   router.put(
-    "/users/:id/roles",
+    "/users/:id/role",
     ...auth,
     requirePermission("rbac:manage"),
-    validateRequest({ params: assignmentIdParamsSchema, body: replaceUserRolesSchema }),
-    controller.replaceUserRoles,
-  );
-
-  router.put(
-    "/roles/:id/permissions",
-    ...auth,
-    requirePermission("rbac:manage"),
-    validateRequest({ params: assignmentIdParamsSchema, body: replaceRolePermissionsSchema }),
-    controller.replaceRolePermissions,
+    validateRequest({ params: assignmentIdParamsSchema, body: replaceUserRoleSchema }),
+    controller.replaceUserRole,
   );
 
   return router;

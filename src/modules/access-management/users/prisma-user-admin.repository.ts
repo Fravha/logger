@@ -55,11 +55,9 @@ export class PrismaUserAdminRepository implements UserAdminRepository {
         select: { id: true },
       });
 
-      if (data.roleIds?.length) {
-        await tx.userRole.createMany({
-          data: [...new Set(data.roleIds)].map((roleId) => ({ userId: created.id, roleId })),
-        });
-      }
+      await tx.userRole.create({
+        data: { userId: created.id, roleId: data.roleId },
+      });
 
       return tx.user.findUniqueOrThrow({ where: { id: created.id }, select: userSelect });
     });
@@ -88,18 +86,19 @@ export class PrismaUserAdminRepository implements UserAdminRepository {
     await this.client.user.delete({ where: { id } });
   }
 
-  countRoles(roleIds: string[]): Promise<number> {
-    return this.client.role.count({ where: { id: { in: [...new Set(roleIds)] } } });
+  async roleExists(roleId: string): Promise<boolean> {
+    return (await this.client.role.count({ where: { id: roleId, deletedAt: null } })) > 0;
   }
 
   async userHasRole(userId: string, roleCode: string): Promise<boolean> {
-    return (await this.client.userRole.count({ where: { userId, role: { code: roleCode } } })) > 0;
+    return (await this.client.userRole.count({ where: { userId, role: { code: roleCode, deletedAt: null } } })) > 0;
   }
 
   countActiveUsersWithRole(roleCode: string): Promise<number> {
-    return this.client.userRole.count({ where: { role: { code: roleCode }, user: { status: "ACTIVE" } } });
+    return this.client.userRole.count({
+      where: { role: { code: roleCode, deletedAt: null }, user: { status: "ACTIVE" } },
+    });
   }
-
 
   private toDomain(user: {
     id: string;
@@ -112,6 +111,7 @@ export class PrismaUserAdminRepository implements UserAdminRepository {
     updatedAt: Date;
     roles: Array<{ role: { id: string; code: string; name: string } }>;
   }): UserAdmin {
+    const role = user.roles[0]?.role ?? null;
     return {
       id: user.id,
       firebaseUid: user.firebaseUid,
@@ -119,7 +119,7 @@ export class PrismaUserAdminRepository implements UserAdminRepository {
       displayName: user.displayName,
       status: user.status,
       lastLoginAt: user.lastLoginAt,
-      roles: user.roles.map(({ role }) => role),
+      role,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };

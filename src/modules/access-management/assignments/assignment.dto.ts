@@ -1,7 +1,3 @@
-export interface ReplaceUserRolesDto {
-  roleIds: string[];
-}
-
-export interface ReplaceRolePermissionsDto {
-  permissionIds: string[];
+export interface ReplaceUserRoleDto {
+  roleId: string;
 }
