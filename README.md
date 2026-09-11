@@ -172,7 +172,7 @@ cp .env.example .env
 | ---         | --- | --- | --- |
 | `NODE_ENV`  | No | `development` | `development`, `test` o `production`. |
 | `PORT`      | No | `3000` | Puerto HTTP entre 1 y 65535. |
-| `DATABASE_URL` | Sí | `postgresql://logger:...@localhost:5433/logger?schema=public` | Cadena de conexión usada por Prisma y `pg`. |
+| `WINTER_DATABASE_URL` | Sí | `postgresql://logger:...@localhost:5433/logger?schema=public` | Cadena de conexión usada por Prisma y `pg`. |
 | `FIREBASE_PROJECT_ID` | Sí | `my-project` | ID del proyecto Firebase. |
 | `FIREBASE_CLIENT_EMAIL` | Sí | `firebase-adminsdk@...` | Email de la cuenta de servicio. |
 | `FIREBASE_PRIVATE_KEY` | Sí | `"-----BEGIN...\n..."` | Clave privada; los saltos deben representarse como `\n`. |
