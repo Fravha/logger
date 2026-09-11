@@ -109,9 +109,16 @@ export class PrismaUserAdminRepository implements UserAdminRepository {
     lastLoginAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
-    roles: Array<{ role: { id: string; code: string; name: string } }>;
+    roles: {
+      role: {
+        id: string;
+        code: string;
+        name: string;
+      };
+    } | null;
   }): UserAdmin {
-    const role = user.roles[0]?.role ?? null;
+    const role = user.roles?.role ?? null;
+
     return {
       id: user.id,
       firebaseUid: user.firebaseUid,

@@ -40,19 +40,19 @@ export class PrismaUserRepository implements UserRepository {
       status: user.status,
       lastLoginAt: user.lastLoginAt,
 
-      roles: user.roles.map(
-        ({ role }) => role.code
-      ),
+      roles: user.roles
+        ? [user.roles.role.code]
+        : [],
 
-      permissions: [
-        ...new Set(
-          user.roles.flatMap(({ role }) =>
-            role.permissions.map(
-              ({ permission }) => permission.code
+      permissions: user.roles
+        ? [
+            ...new Set(
+              user.roles.role.permissions.map(
+                ({ permission }) => permission.code
+              )
             ),
-          ),
-        ),
-      ],
+          ]
+        : [],
     };
   }
 
